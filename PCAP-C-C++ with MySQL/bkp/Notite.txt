@@ -1,0 +1,115 @@
+OSI Model
+    The 7 Layers of OSI Model -> Open System Interconection
+        1. Physical  
+        2. Data Link        A               |
+        3. Network          |<receive data> |<transmit data>
+        4. Transport        |               |
+        5. Session          |               V
+        6. Presentation                     
+        7. Application
+
+    Details of each one:
+        7. End-user processes. Services for file transfers, e-mail, network software
+            Examples: WWW browsers, NFS, SNMP, Telnet, HTTP, FTP
+        6. Transforms data into the form that the application layer can accept. It also encrypt data for compatibility problems.
+            Examples: ASCII, EBCDIC, TIFF, GIF, PICT, JPEG, MPEG 
+        5. Manages connection between applications (coordinates, conversations, exchanges)
+            Examples: NFS, NetBios names, RPC, SQL
+        4. Ensures complete data transfer. Responsable for end-to-end error recovery and flow control.
+            Examples: SPX, TCP, UDP
+        3. Provides switching and routing (Virtual circuits), addressing, internetworking, congestion.
+            Examples: AppleTalk DDP, IP, IPX
+        2. Encoding / Decoding the bits. Two sub layers:
+            2.1 MAC - Media Acces Control - How a computer gains acces to the data and permision to transmit it.
+            2.2 LLC - Logical Link Control - Frame synchronization, flow control and error checking.
+            Examples: PPP, FDDI, ATM, IEEE, HDLC
+        1. Provides the hardware means of sending and receiving data on a carrier,
+            Examples: Ethernet, FDDI. 
+
+IPv4 STRUCTURE:
+    u_char  ver_ihl;        // Version (4 bits) + Internet header length (4 bits)
+    u_char  tos;            // Type of service 
+    u_short tlen;           // Total length 
+    u_short identification; // Identification
+    u_short flags_fo;       // Flags (3 bits) + Fragment offset (13 bits)
+    u_char  ttl;            // Time to live
+    u_char  proto;          // Protocol
+    u_short crc;            // Header checksum
+    ip_address  saddr;      // Source address
+    ip_address  daddr;      // Destination address
+    u_int   op_pad;         // Option + Padding
+
+FUNCTII PCAP
+    1. int pcap_findalldevs(pcap_if_t**, char*);
+        Returns a list of devs in pcap_if_t
+        Returns -1 on failure and 0 on succes.
+        Arguments:
+            pcap_if_t list of devices.
+                next - list element
+                name
+                description
+                adresses - pointer to first element of a list of network addresses for the device.
+                    next
+                    addr - pointer to sockaddr containing an adresses
+                    netmask - pointer to sockaddr with netmask coresponding to addr
+                    broadaddr - pointer to sockaddr with broadcast address corresponding to addr
+                    dstaddr - pointer to sockaddr with the destination addres corresponding to addr
+                        NOTE: Check sa_family member of sockaddr. It might be IPv4 or IPv6 etc.
+                flags
+                    PCAP_IF_LOOPBACK - is loopback?
+                    PCAP_IF_UP - is it up?
+                    PCAP_IF_RUNNING - is it runing?
+            char* errorbuffer[PCAP_ERRBUF_SIZE]
+        sockaddr_in - Structure describing an Internet socket address - cast to addr!!!
+
+
+    2. void pcap_freealldevs(pcap_if_t* alldevs)
+        Free the memory.
+    
+    3. getnameinfo(sockaddr *addr, socklen_t (addrlen), char* host, socklen_t (scoketlen), char* serv, socklen_t (servlen), int flags)
+        Address to name translation in protocol-independent  manner to host and service.
+        Arguments:
+            sockaddr -> socket.
+            socklen_t ->size of socket.
+            char* -> the host (adress actually)
+            socketlen_t -> size of adress (128 for ipv6)
+                next are for service, same. Set null and 0 if you don t care about them.
+            int flags:
+                NI_NUMERICHOST - the  numeric  form  of the hostname is returned
+                NI_NUMERICSERV - the  numeric  form  of  the  service  address is returned.
+
+    4. pcap_t *pcap_open_live(const char *device, int snaplen, int promisc, int to_ms, char *errbuf);
+        -->open a device for capturing
+        Arguments:
+            device - name of the device
+            snaplen - length of snapshot - 65536 guarantees that the whole packet will be captured
+            promisc - specify if promiscuous
+            to_ms - read timeout
+            errbuf :)
+
+    5. pcap_loop(pcap_t *p, int cnt, pcap_handler callback, u_char *user); //-1 / 0 is infinity for cnt.
+        Processes packets from a live capture or ``savefile'' until cnt  packets are processed
+        Arguments:
+            pcap_t the device / socket
+            cnt - number of captures.
+            **callback** pointer to function - routine of handling the captures. see no.6.
+            user - null . oh well? 
+
+    6. typedef void (*pcap_handler)(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes);
+        Routine of handing the captures:
+        Arguments:
+            user - fisier daca vrei sa descarci!!!
+            pcap_pkthdr - pointer to packet timestamp and length
+            u_char - the first caplen bytes from the packet. - null mostly
+
+
+            dns 
+
+gunzip -c rawf77ccdea.data
+                    
+
+
+
+
+
+
