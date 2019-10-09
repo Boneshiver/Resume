@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 
-
+//test
 typedef struct AVL {
 	int value;
 	int balanceFactor;
